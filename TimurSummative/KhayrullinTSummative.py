@@ -886,11 +886,17 @@ while running:
             game = True
         
         # checks for return to menu button for win and lose screens
-        if menu == LOSE or menu == WIN:
+        if menu == LOSE:
             drawLoseScreen()
             if button == 1:
                 if returnRect.collidepoint((mx, my)):
                     menu = MAIN
+        
+        if menu == WIN:
+            drawLoseScreen()
+            if button == 1:
+                if returnRect.collidepoint((mx, my)):
+                    menu = MAIN        
               
         if menu == UPGRADE:
             
@@ -923,7 +929,7 @@ while running:
         for evnt in event.get():
             if evnt.type == QUIT:
                 quit()
-            if evnt.type == MOUSEBUTTONDOWN:
+            if evnt .type == MOUSEBUTTONDOWN:
                 # checks if any mouse button is down,  if so sets clicking to true
                 button = evnt.button
                 #startTicks = time.get_ticks()            
