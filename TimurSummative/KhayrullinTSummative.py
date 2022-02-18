@@ -1,12 +1,3 @@
-'''
-Timur Khayrullin
-ICS3CUJJJ1 - 01
-Mr.Van Rooyen
-Wednesday, January 24, 2018
-
-Final computer science summative "ultimate antivirus"
-'''
-
 #imports necessary modules
 from pygame import *
 from sys import *
@@ -81,7 +72,7 @@ class Player:
     def rotate(self, mouseX, mouseY):
         #rel x and y finds the "vector" of the xplosition to the y position
         rel_x, rel_y = mouseX - self.x, mouseY - self.y
-        #this is where the magic happens. math.atan2 is used to calculate the angle from the current position to the new mouse position (at least that's what I got from it)
+        
         angle = (180 / pi) * -atan2(rel_y, rel_x) + 5
         # Rotate the original image without modifying it.
         self.image = transform.rotate(self.original_image, int(angle))
@@ -191,15 +182,14 @@ class Bullet:
 
     def update(self):
         # Increases Progress of the bullet
-        try:
-            self.x += int((self.vel + pl.shotSpeed_upG) * (self.target_x - self.originalx) /
-                          (sqrt((self.target_x - self.originalx) ** 2 +
-                                     (self.target_y - self.originaly) ** 2)))
-            self.y += int((self.vel + pl.shotSpeed_upG) * (self.target_y - self.originaly) /
-                          (sqrt((self.target_x - self.originalx) ** 2 +
-                                     (self.target_y - self.originaly) ** 2)))
-        except: pass #catches divide by zero errors
         
+        denom = (sqrt((self.target_x - self.originalx) ** 2 +
+                                     (self.target_y - self.originaly) ** 2))
+        
+        if(denom != 0):
+            self.x += int((self.vel + pl.shotSpeed_upG) * (self.target_x - self.originalx) / denom)
+            self.y += int((self.vel + pl.shotSpeed_upG) * (self.target_y - self.originaly) / denom)
+     
         self.rect.center = [self.x, self.y]
     
     def check(self, enemies):
@@ -328,16 +318,18 @@ class Enemy():
         #checks if colliding with any other enemies other than itself. if so, moves in opposite direction by the speed value
         for e in enemies:
             if self.hitbox.colliderect(e.hitbox) and e != self:
-                try:
+                
+                denom = hypot(e.x - self.x, e.y - self.y)
+                
+                if(denom != 0):
                     self.x -= int(self.speed * (e.x - self.x) / hypot(e.x - self.x, e.y - self.y) )
                     self.y -= int(self.speed * (e.y - self.y) / hypot(e.x - self.x, e.y - self.y) )
-                except: pass #catches divide by 0 errors
                 
         #moves towards player
-        try:
-            self.x += int(self.speed * (self.tox - self.x) / hypot(self.tox - self.x, self.toy - self.y) )
-            self.y += int(self.speed * (self.toy - self.y) / hypot(self.tox - self.x, self.toy - self.y) )
-        except: pass #catches divide by 0 errors
+        denom = hypot(self.tox - self.x, self.toy - self.y)
+        if(denom != 0):
+            self.x += int(self.speed * (self.tox - self.x) / denom )
+            self.y += int(self.speed * (self.toy - self.y) / denom )
         
         #updates hitboxes and such
         self.rect = Rect(self.x, self.y, self.w, self.h)
