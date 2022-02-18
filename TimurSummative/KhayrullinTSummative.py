@@ -101,15 +101,13 @@ class Player:
         self.mouse_x, self.mouse_y = mouse_x, mouse_y
         
         # creates a line from the center of the player to the muzzle
-        try:
-            self.muzzle_x = self.center_x + int(35 * (self.mouse_x - self.center_x) /
-                          (sqrt((self.mouse_x - self.center_x) ** 2 +
-                                     (self.mouse_y - self.center_y) ** 2)))
-            self.muzzle_y = self.center_y + int(35 * (self.mouse_y - self.center_y) /
-                          (sqrt((self.mouse_x - self.center_x) ** 2 +
-                                     (self.mouse_y - self.center_y) ** 2)))
-        except: 
-            pass
+        
+        denom = (sqrt((self.mouse_x - self.center_x) ** 2 +
+                                     (self.mouse_y - self.center_y) ** 2))
+        
+        if denom != 0:
+            self.muzzle_x = self.center_x + int(35 * (self.mouse_x - self.center_x) / denom )
+            self.muzzle_y = self.center_y + int(35 * (self.mouse_y - self.center_y) / denom )
         
         #checks if any enemies hit the player
         for e in enemies:
@@ -186,7 +184,7 @@ class Bullet:
         denom = (sqrt((self.target_x - self.originalx) ** 2 +
                                      (self.target_y - self.originaly) ** 2))
         
-        if(denom != 0):
+        if denom != 0:
             self.x += int((self.vel + pl.shotSpeed_upG) * (self.target_x - self.originalx) / denom)
             self.y += int((self.vel + pl.shotSpeed_upG) * (self.target_y - self.originaly) / denom)
      
@@ -327,7 +325,7 @@ class Enemy():
                 
         #moves towards player
         denom = hypot(self.tox - self.x, self.toy - self.y)
-        if(denom != 0):
+        if denom != 0:
             self.x += int(self.speed * (self.tox - self.x) / denom )
             self.y += int(self.speed * (self.toy - self.y) / denom )
         
